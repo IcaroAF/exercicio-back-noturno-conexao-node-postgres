@@ -4,13 +4,13 @@ const listarUsuarios = async (req, res) => {
   try {
     const { rows: usuarios } = await conexao.query("SELECT * FROM usuarios");
 
-    for (const usuario of usuarios) {
-      const { rows: livros } = await conexao.query(
-        "SELECT * FROM livros WHERE autor_id = $1",
-        [usuario.id]
-      );
-      usuario.livros = livros;
-    }
+    // for (const usuario of usuarios) {
+    //   const { rows: livros } = await conexao.query(
+    //     "SELECT * FROM livros WHERE autor_id = $1",
+    //     [usuario.id]
+    //   );
+    //   usuario.livros = livros;
+    // }
 
     return res.status(200).json(usuarios);
   } catch (error) {
@@ -91,9 +91,9 @@ const atualizarUsuario = async (req, res) => {
     }
 
     const query = "UPDATE usuarios SET nome = $1, idade = $2 WHERE id = $3";
-    const autorAtualizado = await conexao.query(query, [nome, idade, id]);
+    const usuarioAtualizado = await conexao.query(query, [nome, idade, id]);
 
-    if (autorAtualizado.rowCount === 0) {
+    if (usuarioAtualizado.rowCount === 0) {
       return res.status(400).json("Não foi possível atualizar o usuario");
     }
 
