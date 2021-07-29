@@ -121,8 +121,26 @@ const excluirUsuario = async (req, res) => {
       [id]
     );
 
+    const { rows: emprestimos } = await conexao.query(
+      "SELECT usuario_id FROM emprestimos where usuario_id = $1",
+      [id]
+    );
+
     if (usuario.rowCount === 0) {
       return res.status(404).json("Usuário não encontrado");
+    }
+
+    let emprestimosUsuario = 0;
+    for (const emprestimo of emprestimos) {
+      emprestimosUsuario++;
+    }
+
+    if (emprestimosUsuario > 0) {
+      return res
+        .status(400)
+        .json(
+          `Há ${emprestimosUsuario} empréstimo(s) associado(s) à este usuário. Por favor faça a exclusão antes de solicitar a remoção.`
+        );
     }
 
     const query = "DELETE FROM usuarios WHERE id = $1";
