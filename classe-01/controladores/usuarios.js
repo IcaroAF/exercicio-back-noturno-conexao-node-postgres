@@ -23,9 +23,17 @@ const obterUsuario = async (req, res) => {
   const { id } = req.params;
   try {
     const usuario = await conexao.query(
-      "SELECT * FROM usuarios WHERE id = $1",
+      `SELECT * FROM usuarios WHERE id = $1`,
       [id]
     );
+
+    const { rows: emprestimos } = await conexao.query(
+      `SELECT e.*, l.nome as livro FROM emprestimos e 
+      LEFT JOIN livros l on e.livro_id = l.id WHERE e.usuario_id = $1`,
+      [id]
+    );
+
+    usuario.rows[0].emprestimos = emprestimos;
 
     if (usuario.rowCount === 0) {
       return res.status(404).json("Usuário não encontrado");
