@@ -3,7 +3,10 @@ const conexao = require("../conexao");
 const listarEmprestimos = async (req, res) => {
   try {
     const { rows: emprestimos } = await conexao.query(
-      "SELECT * FROM emprestimos"
+      `SELECT e.id, u.nome as usuario, u.telefone, u.email, l.nome as livro, e.status FROM emprestimos e
+      LEFT JOIN usuarios u on e.usuario_id = u.id
+      LEFT JOIN livros l on e.livro_id = l.id 
+      `
     );
 
     return res.status(200).json(emprestimos);
