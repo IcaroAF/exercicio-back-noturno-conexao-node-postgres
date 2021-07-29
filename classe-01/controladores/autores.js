@@ -110,8 +110,6 @@ const excluirAutor = async (req, res) => {
       livrosAutor++;
     }
 
-    console.log(livrosAutor);
-
     if (livrosAutor > 0) {
       return res
         .status(400)

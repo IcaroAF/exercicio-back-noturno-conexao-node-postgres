@@ -4,13 +4,14 @@ const listarUsuarios = async (req, res) => {
   try {
     const { rows: usuarios } = await conexao.query("SELECT * FROM usuarios");
 
-    // for (const usuario of usuarios) {
-    //   const { rows: livros } = await conexao.query(
-    //     "SELECT * FROM livros WHERE autor_id = $1",
-    //     [usuario.id]
-    //   );
-    //   usuario.livros = livros;
-    // }
+    for (const usuario of usuarios) {
+      const { rows: emprestimos } = await conexao.query(
+        `SELECT e.*, l.nome as livro FROM emprestimos e 
+        LEFT JOIN livros l on e.livro_id = l.id WHERE e.usuario_id = $1`,
+        [usuario.id]
+      );
+      usuario.emprestimos = emprestimos;
+    }
 
     return res.status(200).json(usuarios);
   } catch (error) {
